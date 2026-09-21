@@ -1,0 +1,53 @@
+openapi: 3.1.0
+info:
+  title: IdMA
+  version: 0.1.0
+  description: Identity Management Agent — scoped short-lived tokens
+servers:
+  - url: http://localhost:8090/v1
+paths:
+  /identity/health:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: ok
+  /identity/issue:
+    post:
+      operationId: issueToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [agent_id]
+              properties:
+                agent_id: {type: string}
+                scopes:
+                  type: array
+                  items: {type: string}
+                ttl_seconds: {type: integer, default: 3600}
+      responses:
+        "200":
+          description: token
+  /identity/introspect:
+    post:
+      operationId: introspect
+      responses:
+        "200":
+          description: claims
+  /identity/revoke:
+    post:
+      operationId: revoke
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jti]
+              properties:
+                jti: {type: string}
+      responses:
+        "200":
+          description: revoked
